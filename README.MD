@@ -25,3 +25,10 @@ python main.py
 
 ```
 
+-- Запуск тестов
+```bash
+pytest
+
+```
+
+
