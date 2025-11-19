@@ -1,28 +1,29 @@
-import csv
 import argparse
+import csv
+import sys
 from collections import defaultdict
-from typing import List, Dict
+from typing import Dict, List
 
 from tabulate import tabulate
-import sys
 
 
 class DataReader:
     """Класс для чтения данных"""
+
     @staticmethod
     def read_file(file_path: str) -> List[Dict[str, str]]:
-        file = file_path.lower().split('.')[-1]
+        file = file_path.lower().split(".")[-1]
 
-        if file == 'csv':
+        if file == "csv":
             return DataReader._read_csv(file_path)
-        if file == 'json':
+        if file == "json":
             pass
         else:
-            raise ValueError(f'Неправильный формат файла {file}')
+            raise ValueError(f"Неправильный формат файла {file}")
 
     @staticmethod
     def _read_csv(file_path: str) -> List[Dict[str, str]]:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             return [dict(row) for row in reader]
 
@@ -33,6 +34,7 @@ class DataReader:
 
 class EmpAnalyzer:
     """Анализатор сотрудников"""
+
     @staticmethod
     def combining_files(file_paths: List[str]) -> List[Dict]:
         """
@@ -54,63 +56,79 @@ class EmpAnalyzer:
         data = defaultdict(list)
 
         for emp in employees:
-            position = emp['position']
-            performance = float(emp['performance'])
+            position = emp["position"]
+            performance = float(emp["performance"])
             data[position].append(performance)
 
         res = []
         for position, performance in data.items():
-            avg_performance = sum(performance)/len(performance)
-            res.append({
-                'position': position,
-                'avg_performance': round(avg_performance, 2),
-                'employee_count': len(performance),
-            })
+            avg_performance = sum(performance) / len(performance)
+            res.append(
+                {
+                    "position": position,
+                    "avg_performance": round(avg_performance, 2),
+                    "employee_count": len(performance),
+                }
+            )
 
-        res.sort(key=lambda x: x['avg_performance'], reverse=True)
+        res.sort(key=lambda x: x["avg_performance"], reverse=True)
         return res
+
 
 class ReportGen:
     """Генерируем отчет"""
+
     @staticmethod
     def report(stats: List[Dict]):
-        for i, stat in enumerate(stats,1):
-            print(f'{i} {stat['position']} {stat['avg_performance']}')
-
+        for i, stat in enumerate(stats, 1):
+            print(f"{i} {stat['position']} {stat['avg_performance']}")
 
     @staticmethod
     def table_report(stats: List[Dict], file_count: int):
         data = []
         for stat in stats:
-            data.append([
-                stat['position'],
-                stat['avg_performance'],
-                stat['employee_count'],
-            ])
-        headers = ['Должность', 'Рейтинг', 'Количество сотрудников']
-        print(tabulate(data, headers=headers, tablefmt='grid', stralign='center'))
+            data.append(
+                [
+                    stat["position"],
+                    stat["avg_performance"],
+                    stat["employee_count"],
+                ]
+            )
+        headers = ["Должность", "Рейтинг", "Количество сотрудников"]
+        print(tabulate(data, headers=headers, tablefmt="grid", stralign="center"))
 
     @staticmethod
-    def save_csv(stats: List[Dict], filename='report.csv'):
-        save_path = 'C://Users//Green//OneDrive//Рабочий стол//Обучение//ТЗ//workmate//' + filename
-        with open(save_path, 'w', newline='', encoding='utf-8') as f:
+    def save_csv(stats: List[Dict], filename="report.csv"):
+        save_path = (
+            "C://Users//Green//OneDrive//Рабочий стол//Обучение//ТЗ//workmate//"
+            + filename
+        )
+        with open(save_path, "w", newline="", encoding="utf-8") as f:
             # noinspection PyTypeChecker
-            writer = csv.DictWriter(f, fieldnames=['#', 'Должность', 'Рейтинг'])
+            writer = csv.DictWriter(f, fieldnames=["#", "Должность", "Рейтинг"])
             writer.writeheader()
             for i, stat in enumerate(stats, 1):
-                writer.writerow({
-                    '#': i,
-                    'Должность': stat['position'],
-                    'Рейтинг': stat['avg_performance'],
-                })
-        print(f'Отчет сохранен в файл: {filename}')
+                writer.writerow(
+                    {
+                        "#": i,
+                        "Должность": stat["position"],
+                        "Рейтинг": stat["avg_performance"],
+                    }
+                )
+        print(f"Отчет сохранен в файл: {filename}")
+
 
 def main():
-    parser = argparse.ArgumentParser(description='Анализ рейтинга по позициям')
-    parser.add_argument('--files', nargs='+', required=True, help='файлы для анализа')
-    parser.add_argument('--report', nargs='+', required=True, choices=['performance', 'table', 'csv'],
-                        help='тип отчета: performance - списком, table - таблица')
-    parser.add_argument('--output', help='Название файла (для сохранения в CSV)')
+    parser = argparse.ArgumentParser(description="Анализ рейтинга по позициям")
+    parser.add_argument("--files", nargs="+", required=True, help="файлы для анализа")
+    parser.add_argument(
+        "--report",
+        nargs="+",
+        required=True,
+        choices=["performance", "table", "csv"],
+        help="тип отчета: performance - списком, table - таблица",
+    )
+    parser.add_argument("--output", help="Название файла (для сохранения в CSV)")
 
     args = parser.parse_args()
 
@@ -118,15 +136,17 @@ def main():
     stats = EmpAnalyzer.calc_stat(all_emp)
 
     for report_type in args.report:
-        if report_type == 'table':
+        if report_type == "table":
             ReportGen.table_report(stats, len(args.files))
-        elif report_type == 'performance':
+        elif report_type == "performance":
             ReportGen.report(stats)
-        elif report_type == 'csv':
-            filename = args.output if args.output else 'report.csv'
+        elif report_type == "csv":
+            filename = args.output if args.output else "report.csv"
             ReportGen.save_csv(stats, filename)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
+    """
     files = [
         'C://Users//Green//OneDrive//Рабочий стол//Обучение//ТЗ//workmate//employees1.csv',
         'C://Users//Green//OneDrive//Рабочий стол//Обучение//ТЗ//workmate//employees2.csv',
@@ -134,4 +154,6 @@ if __name__ == '__main__':
     sys.argv = (['main.py', '--files']
                 + files +
                 ['--report', 'performance', 'csv', '--output', 'new_report.csv'])
+    """
+    # python main.py --files ../employees1.csv ../employees2.csv --report performance
     main()
