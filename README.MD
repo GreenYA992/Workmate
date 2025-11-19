@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 -- Командная строка
 ```bash
-python parser.py --files employees1.csv employees2.csv --report performance
+python parser.py --files ../data_folder/employees1.csv ../data_folder/employees2.csv --report performance
 
 ```
 
