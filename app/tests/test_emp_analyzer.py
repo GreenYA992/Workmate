@@ -41,7 +41,7 @@ class TestEmpAnalyzer:
         files = []
         try:
             with tempfile.NamedTemporaryFile(
-                    mode="w", suffix=".csv", delete=False
+                mode="w", suffix=".csv", delete=False
             ) as f1:
                 writer = csv.writer(f1)
                 writer.writerow(["name", "position", "performance"])
@@ -50,7 +50,7 @@ class TestEmpAnalyzer:
                 files.append(f1.name)
 
             with tempfile.NamedTemporaryFile(
-                    mode="w", suffix=".csv", delete=False
+                mode="w", suffix=".csv", delete=False
             ) as f2:
                 writer = csv.writer(f2)
                 writer.writerow(["name", "position", "performance"])
@@ -60,23 +60,23 @@ class TestEmpAnalyzer:
 
             res = EmpAnalyzer.combining_files(files)
 
-            assert len(res) == 4 # 2 сотрудника из первого и 2 из второго
+            assert len(res) == 4  # 2 сотрудника из первого и 2 из второго
 
-            names = [emp['name'] for emp in res]
+            names = [emp["name"] for emp in res]
             assert "Alex" in names
             assert "Maria" in names
             assert "John" in names
             assert "Anna" in names
 
-            positions = [emp['position'] for emp in res]
-            assert 'Developer' in positions
-            assert 'QA' in positions
+            positions = [emp["position"] for emp in res]
+            assert "Developer" in positions
+            assert "QA" in positions
 
-            performances = [emp['performance'] for emp in res]
-            assert '4.5' in performances
-            assert '4.8' in performances
-            assert '5.0' in performances
-            assert '4.2' in performances
+            performances = [emp["performance"] for emp in res]
+            assert "4.5" in performances
+            assert "4.8" in performances
+            assert "5.0" in performances
+            assert "4.2" in performances
 
         finally:
             for file_path in files:

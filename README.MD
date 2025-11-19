@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 Использование
 
--- Командная строка
+-- Командная строка (из директории app)
 ```bash
 python parser.py --files ../data_folder/employees1.csv ../data_folder/employees2.csv --report performance
 
