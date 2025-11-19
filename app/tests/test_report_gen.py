@@ -15,9 +15,12 @@ class TestReportGen:
         captured = capsys.readouterr()
         output = captured.out
 
-        assert "1 Developer 4.75" in output
-        assert "2 QA 4.1" in output
-        assert output.strip().count("\n") == 1
+        assert "Developer" in output and "4.75" in output
+        assert "QA" in output and "4.10" in output
+        assert "1" in output and "2" in output
+
+        lines = output.strip().split("\n")
+        assert len(lines) >= 4  # заголовок, разделитель и 2 строки
 
     def test_table_report(self, capsys):
         """Тест табличного отчета"""

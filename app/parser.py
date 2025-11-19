@@ -1,6 +1,5 @@
 import argparse
 import csv
-import sys
 from collections import defaultdict
 from typing import Dict, List
 
@@ -80,8 +79,21 @@ class ReportGen:
 
     @staticmethod
     def report(stats: List[Dict]):
+        data = []
         for i, stat in enumerate(stats, 1):
-            print(f"{i} {stat['position']} {stat['avg_performance']}")
+            data.append(
+                [
+                    i,
+                    stat["position"],
+                    stat["avg_performance"],
+                ]
+            )
+        headers = ["position", "performance"]
+        print(
+            tabulate(
+                data, headers=headers, stralign="left", numalign="right", floatfmt=".2f"
+            )
+        )
 
     @staticmethod
     def table_report(stats: List[Dict], file_count: int):

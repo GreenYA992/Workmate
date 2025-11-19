@@ -1,10 +1,10 @@
 import csv
 import os
 import tempfile
-
-import pytest
 # noinspection PyTypeChecker
 from parser import DataReader
+
+import pytest
 
 
 class TestDataReader:

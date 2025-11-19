@@ -1,7 +1,6 @@
 import csv
 import os
 import tempfile
-
 # noinspection PyTypeChecker
 from parser import DataReader, EmpAnalyzer, ReportGen
 
