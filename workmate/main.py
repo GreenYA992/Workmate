@@ -10,14 +10,26 @@ import sys
 class DataReader:
     """Класс для чтения данных"""
     @staticmethod
-    def read_csv(file_path: str) -> List[Dict[str, str]]:
+    def read_file(file_path: str) -> List[Dict[str, str]]:
+        file = file_path.lower().split('.')[-1]
+
+        if file == 'csv':
+            return DataReader._read_csv(file_path)
+        if file == 'json':
+            pass
+        else:
+            raise ValueError(f'Неправильный формат файла {file}')
+
+    @staticmethod
+    def _read_csv(file_path: str) -> List[Dict[str, str]]:
         with open(file_path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             return [dict(row) for row in reader]
 
     @staticmethod
-    def read_json(file_path: str) -> List[Dict[str, str]]:
+    def _read_json(file_path: str) -> List[Dict[str, str]]:
         pass
+
 
 class EmpAnalyzer:
     """Анализатор сотрудников"""
@@ -29,7 +41,7 @@ class EmpAnalyzer:
         all_emp = []
 
         for file_path in file_paths:
-            emp = DataReader.read_csv(file_path)
+            emp = DataReader.read_file(file_path)
             all_emp.extend(emp)
 
         return all_emp
@@ -111,7 +123,8 @@ def main():
         elif report_type == 'performance':
             ReportGen.report(stats)
         elif report_type == 'csv':
-            ReportGen.save_csv(stats)
+            filename = args.output if args.output else 'report.csv'
+            ReportGen.save_csv(stats, filename)
 
 if __name__ == '__main__':
     files = [
