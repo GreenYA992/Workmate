@@ -1,5 +1,5 @@
 # noinspection PyTypeChecker
-from main import ReportGen
+from parser import ReportGen
 
 
 class TestReportGen:

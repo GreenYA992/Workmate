@@ -3,7 +3,7 @@ import os
 import tempfile
 
 # noinspection PyTypeChecker
-from main import DataReader, EmpAnalyzer, ReportGen
+from parser import DataReader, EmpAnalyzer, ReportGen
 
 
 class TestIntegration:

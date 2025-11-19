@@ -4,7 +4,7 @@ import tempfile
 
 import pytest
 # noinspection PyTypeChecker
-from main import DataReader
+from parser import DataReader
 
 
 class TestDataReader:

@@ -1,5 +1,5 @@
 # noinspection PyTypeChecker
-from main import EmpAnalyzer
+from parser import EmpAnalyzer
 
 
 class TestEmpAnalyzer:
