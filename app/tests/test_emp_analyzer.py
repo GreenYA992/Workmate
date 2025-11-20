@@ -1,3 +1,5 @@
+"""Тесты для модуля EmpAnalyzer"""
+
 import csv
 import os
 import tempfile
@@ -6,6 +8,8 @@ from parser import EmpAnalyzer
 
 
 class TestEmpAnalyzer:
+    """Тестирование класса EmpAnalyzer"""
+
     def test_calc_stat(self):
         """Тест расчета статистики"""
         emp = [
@@ -24,7 +28,7 @@ class TestEmpAnalyzer:
         assert res[0]["avg_performance"] >= res[1]["avg_performance"]
 
     def test_calc_empty_data(self):
-        """ТЕст на пустых данных"""
+        """Тест на пустых данных"""
         res = EmpAnalyzer.calc_stat([])
         assert res == []
 
@@ -38,6 +42,7 @@ class TestEmpAnalyzer:
         assert res[0]["employee_count"] == 1
 
     def test_combining_files(self):
+        """Тест объединения нескольких файлов"""
         files = []
         try:
             with tempfile.NamedTemporaryFile(

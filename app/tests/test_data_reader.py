@@ -1,3 +1,5 @@
+"""Тесты для модуля DataReader"""
+
 import csv
 import os
 import tempfile
@@ -8,6 +10,8 @@ import pytest
 
 
 class TestDataReader:
+    """Тестирование класса DataReader"""
+
     def test_read_csv_valid_file(self):
         """Тест чтения CSV файла"""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
@@ -26,11 +30,11 @@ class TestDataReader:
             os.unlink(temp_path)
 
     def test_read_csv_nonexistent_file(self):
-        """Чтение несуществующего файла"""
+        """Тест чтение несуществующего файла"""
         with pytest.raises(FileNotFoundError):
             DataReader.read_file("nonexistent_file.csv")
 
     def test_read_unsupported_format(self):
-        """Чтение неподдерживаемого формата"""
+        """Тест чтение неподдерживаемого формата"""
         with pytest.raises(ValueError):
             DataReader.read_file("file.txt")

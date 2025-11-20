@@ -1,5 +1,8 @@
+"""Модуль для анализа данных сотрудника и генерации отчетов"""
+
 import argparse
 import csv
+import sys
 from collections import defaultdict
 from typing import Dict, List
 
@@ -11,6 +14,15 @@ class DataReader:
 
     @staticmethod
     def read_file(file_path: str) -> List[Dict[str, str]]:
+        """
+        Читает файл и возвращает данные в виде списка словарей.
+        Args:
+            file_path (str): Путь к файлу
+        Returns:
+            List[Dict[str, str]]: Данные из файла
+        Raise:
+            ValueError: Если формат не поддерживается
+        """
         file = file_path.lower().split(".")[-1]
 
         if file == "csv":
@@ -22,12 +34,27 @@ class DataReader:
 
     @staticmethod
     def _read_csv(file_path: str) -> List[Dict[str, str]]:
+        """
+        Читает CSV файл.
+        Args:
+            file_path (str): Путь к файлу
+        Returns:
+            List[Dict[str, str]]: Данные из CSV файла
+        """
         with open(file_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             return [dict(row) for row in reader]
 
     @staticmethod
     def _read_json(file_path: str) -> List[Dict[str, str]]:
+        """
+        Читает JSON файл.
+        (Метод пропущен, т.к не требуется по заданию)
+        Args:
+            file_path (str): Путь к файлу
+        Returns:
+            List[Dict[str, str]]: Данные из JSON файла
+        """
         pass
 
 
@@ -37,7 +64,11 @@ class EmpAnalyzer:
     @staticmethod
     def combining_files(file_paths: List[str]) -> List[Dict]:
         """
-        Анализируем несколько CSV и возвращаем общий результат
+        Анализируем несколько файлов.
+        Args:
+            file_paths (List[str]): Список путей к файлу
+        Returns:
+            List[Dict[str, str]]: Объединенные данные из файлов
         """
         all_emp = []
 
@@ -50,7 +81,11 @@ class EmpAnalyzer:
     @staticmethod
     def calc_stat(employees: List[Dict]) -> List[Dict]:
         """
-        Считаем статистику
+        Считаем статистику.
+        Args:
+            employees (List[Dict]): Список данных сотрудников
+        Returns:
+            List[Dict]: Статистика по должностям
         """
         data = defaultdict(list)
 
@@ -75,10 +110,15 @@ class EmpAnalyzer:
 
 
 class ReportGen:
-    """Генерируем отчет"""
+    """Класс генерации отчета"""
 
     @staticmethod
     def report(stats: List[Dict]):
+        """
+        Выводим статистику в виде списка.
+        Args:
+            stats (List[Dict]): Статистика для отчета
+        """
         data = []
         for i, stat in enumerate(stats, 1):
             data.append(
@@ -96,7 +136,12 @@ class ReportGen:
         )
 
     @staticmethod
-    def table_report(stats: List[Dict], file_count: int):
+    def table_report(stats: List[Dict]):
+        """
+        Выводим статистику в виде таблицы.
+        Args:
+            stats (List[Dict]): Статистика для отчета
+        """
         data = []
         for stat in stats:
             data.append(
@@ -111,6 +156,12 @@ class ReportGen:
 
     @staticmethod
     def save_csv(stats: List[Dict], filename="report.csv"):
+        """
+        Сохраняем отчет в CSV файл
+        Args:
+            stats (List[Dict]): Статистика для сохранения
+            filename (str): Имя файла при сохранении
+        """
         save_path = (
             "C://Users//Green//OneDrive//Рабочий стол//Обучение//ТЗ//workmate//data_folder//"
             + filename
@@ -131,6 +182,7 @@ class ReportGen:
 
 
 def main():
+    """Функция для запуска анализатора"""
     parser = argparse.ArgumentParser(description="Анализ рейтинга по позициям")
     parser.add_argument("--files", nargs="+", required=True, help="файлы для анализа")
     parser.add_argument(
@@ -149,12 +201,16 @@ def main():
 
     for report_type in args.report:
         if report_type == "table":
-            ReportGen.table_report(stats, len(args.files))
+            ReportGen.table_report(stats)
         elif report_type == "performance":
             ReportGen.report(stats)
         elif report_type == "csv":
             filename = args.output if args.output else "report.csv"
             ReportGen.save_csv(stats, filename)
+        else:
+            print(f'Ошибка: неизвестный тип отчета "{report_type}!!!"')
+            print("Доступные типы отчета: performance, table, csv")
+            sys.exit(1)
 
 
 if __name__ == "__main__":

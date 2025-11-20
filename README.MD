@@ -19,9 +19,11 @@ python parser.py --files ../data_folder/employees1.csv ../data_folder/employees2
 ```
 
 -- Альтернатива, можно прописать параметры запуска в main
-(Стартовые параметры установлены)
+(Стартовые параметры установлены).
+Можно поменять параметры: --report 
+
 ```bash
-python main.py 
+python main.py
 
 ```
 
@@ -30,5 +32,19 @@ python main.py
 pytest
 
 ```
+
+-- Пример запуска скрипта (вывод)
+
+    position               performance
+--  -------------------  -------------
+ 1  Backend Developer             4.83
+ 2  DevOps Engineer               4.80
+ 3  Data Engineer                 4.70
+ 4  Fullstack Developer           4.70
+ 5  Frontend Developer            4.65
+ 6  Data Scientist                4.65
+ 7  Mobile Developer              4.60
+ 8  QA Engineer                   4.50
+
 
 

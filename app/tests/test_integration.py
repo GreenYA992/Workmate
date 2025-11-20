@@ -1,3 +1,5 @@
+"""Тест интеграции приложения"""
+
 import csv
 import os
 import tempfile
@@ -6,8 +8,10 @@ from parser import DataReader, EmpAnalyzer, ReportGen
 
 
 class TestIntegration:
+    """Интеграционные тесты"""
+
     def test_workflow(self, capsys):
-        """Полный тест workflow"""
+        """Тест полного workflow"""
         files = []
         try:
             with tempfile.NamedTemporaryFile(

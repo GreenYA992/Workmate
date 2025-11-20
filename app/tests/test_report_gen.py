@@ -1,8 +1,12 @@
+"""Тест для модуля ReportGen"""
+
 # noinspection PyTypeChecker
 from parser import ReportGen
 
 
 class TestReportGen:
+    """Тестирование класса ReportGen"""
+
     def test_report_output(self, capsys):
         """Тест вывода отчета performance"""
         stats = [
@@ -28,7 +32,7 @@ class TestReportGen:
             {"position": "Developer", "avg_performance": 4.75, "employee_count": 2},
         ]
 
-        ReportGen.table_report(stats, 1)
+        ReportGen.table_report(stats)
         captured = capsys.readouterr()
         output = captured.out
 
