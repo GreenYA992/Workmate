@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import os
 import sys
 from collections import defaultdict
 from typing import Dict, List
@@ -181,6 +182,76 @@ class ReportGen:
         print(f"Отчет сохранен в файл: {filename}")
 
 
+class Validator:
+    """Класс для валидации данных"""
+
+    SUPPORTED_EXTENSIONS = ["csv", "json"]
+    SUPPORTED_REPORTS = ["performance", "table", "csv"]
+
+    @staticmethod
+    def validate_report_type(value):
+        """
+        Проверка типа отчета
+        Args:
+            value: Значение для проверки
+        Returns:
+            str: Проверенное значение
+        Raise:
+            argparse.ArgumentTypeError: Если формат не поддерживается
+        """
+        if value not in Validator.SUPPORTED_REPORTS:
+            raise argparse.ArgumentTypeError(
+                f"\nНеправильный тип отчета {value} !!!. "
+                f'\nДоступные типы отчета: {", ".join(Validator.SUPPORTED_REPORTS)}'
+            )
+        return value
+
+    @staticmethod
+    def validate_file_paths(file_paths):
+        """
+        Проверяет список путей к файлам.
+        Args:
+            file_paths: Список путей
+        Returns:
+            List: список valid файлов
+        Raise:
+            argparse.ArgumentTypeError: если нет valid файлов
+        """
+
+        valid_files = []
+        missing_files = []
+        invalid_format_files = []
+        messages = []
+
+        for file_path in file_paths:
+            file_ext = file_path.lower().split(".")[-1]
+            if file_ext not in Validator.SUPPORTED_EXTENSIONS:
+                invalid_format_files.append(file_path)
+                continue
+            if not os.path.exists(file_path):
+                missing_files.append(file_path)
+                continue
+            valid_files.append(file_path)
+
+        if valid_files:
+            messages.append(f"Обработано файлов: {len(valid_files)}")
+        if missing_files:
+            messages.append(f"Файлы не найдены: {', '.join(missing_files)}")
+        if invalid_format_files:
+            messages.append(f"Нераспознанный формат: {', '.join(invalid_format_files)}")
+
+        if messages:
+            print("\n".join(messages))
+
+        if not valid_files:
+            raise argparse.ArgumentTypeError(
+                f"Не найдено ни одного файля для обработки. "
+                f"Проверьте пути и форматы файлов. "
+                f"Поддерживаемые форматы: {', '.join(Validator.SUPPORTED_EXTENSIONS)}"
+            )
+        return valid_files
+
+
 def main():
     """Функция для запуска анализатора"""
     parser = argparse.ArgumentParser(description="Анализ рейтинга по позициям")
@@ -189,14 +260,22 @@ def main():
         "--report",
         nargs="+",
         required=True,
-        choices=["performance", "table", "csv"],
+        type=Validator.validate_report_type,
         help="тип отчета: performance - списком, table - таблица",
     )
     parser.add_argument("--output", help="Название файла (для сохранения в CSV)")
 
     args = parser.parse_args()
 
-    all_emp = EmpAnalyzer.combining_files(args.files)
+    valid_files = []
+
+    try:
+        valid_files = Validator.validate_file_paths(args.files)
+    except argparse.ArgumentTypeError as e:
+        print(f"Ошибка {e}")
+        sys.exit(1)
+
+    all_emp = EmpAnalyzer.combining_files(valid_files)
     stats = EmpAnalyzer.calc_stat(all_emp)
 
     for report_type in args.report:
@@ -207,10 +286,6 @@ def main():
         elif report_type == "csv":
             filename = args.output if args.output else "report.csv"
             ReportGen.save_csv(stats, filename)
-        else:
-            print(f'Ошибка: неизвестный тип отчета "{report_type}!!!"')
-            print("Доступные типы отчета: performance, table, csv")
-            sys.exit(1)
 
 
 if __name__ == "__main__":
