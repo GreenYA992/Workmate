@@ -245,7 +245,7 @@ class Validator:
 
         if not valid_files:
             raise argparse.ArgumentTypeError(
-                f"Не найдено ни одного файля для обработки. "
+                f"Не найдено ни одного файла для обработки. "
                 f"Проверьте пути и форматы файлов. "
                 f"Поддерживаемые форматы: {', '.join(Validator.SUPPORTED_EXTENSIONS)}"
             )

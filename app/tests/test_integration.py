@@ -6,6 +6,8 @@ import tempfile
 # noinspection PyTypeChecker
 from parser import DataReader, EmpAnalyzer, ReportGen
 
+import pytest
+
 
 class TestIntegration:
     """Интеграционные тесты"""
@@ -43,6 +45,32 @@ class TestIntegration:
             assert "QA" in output
             assert "4.75" in output
             assert "4.5" in output
+
+        finally:
+            for file_path in files:
+                if os.path.exists(file_path):
+                    os.unlink(file_path)
+
+
+class TestIntegrationErrors:
+    """Интеграционный тест с ошибками"""
+
+    def test_workflow_with_invalid_data(self):
+        """Тест workflow с некорректными данными"""
+        files = []
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".csv", delete=False
+            ) as f:
+                w = csv.writer(f)
+                w.writerow(["name", "position", "performance"])
+                w.writerow(["Alex", "Developer", "Invalid_value"])
+                files.append(f.name)
+
+            emp = EmpAnalyzer.combining_files(files)
+
+            with pytest.raises(ValueError):
+                EmpAnalyzer.calc_stat(emp)
 
         finally:
             for file_path in files:

@@ -6,6 +6,8 @@ import tempfile
 # noinspection PyTypeChecker
 from parser import EmpAnalyzer
 
+import pytest
+
 
 class TestEmpAnalyzer:
     """Тестирование класса EmpAnalyzer"""
@@ -87,3 +89,27 @@ class TestEmpAnalyzer:
             for file_path in files:
                 if os.path.exists(file_path):
                     os.unlink(file_path)
+
+
+class TestEmpAnalyzerErrors:
+    """Тест обработки ошибок EmpAnalyzer"""
+
+    def test_calc_stat_invalid_performance(self):
+        """Тест с неправильными значениями performance"""
+        emp = [
+            {"position": "Developer", "performance": "invalid"},
+            {"position": "Developer", "performance": "4.5"},
+        ]
+
+        with pytest.raises(ValueError):
+            EmpAnalyzer.calc_stat(emp)
+
+    def test_calc_stat_missing_keys(self):
+        """Тест с отсутствием ключевых данных"""
+        emp = [
+            {"name": "Alex", "position": "Developer"},
+            {"name": "Maria", "performance": "4.5"},
+        ]
+
+        with pytest.raises(KeyError):
+            EmpAnalyzer.calc_stat(emp)

@@ -40,3 +40,13 @@ class TestReportGen:
         assert "Рейтинг" in output
         assert "Developer" in output
         assert "4.75" in output
+
+    def test_report_empty_stats(self, capsys):
+        """Тест отчета с пустой статистикой"""
+        ReportGen.report([])
+        captured = capsys.readouterr()
+        output = captured.out
+
+        # Должны быть заголовки, даже при пустых данных
+        assert "position" in output
+        assert "performance" in output

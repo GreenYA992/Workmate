@@ -1,31 +1,34 @@
 """Тесты для модуля Validator"""
+
 import argparse
+import os
+import tempfile
+from parser import Validator
 
 import pytest
-import tempfile
-import os
-from parser import Validator
+
 
 class TestValidator:
     """Тесты для класса Validator"""
+
     def test_validate_report_type_valid(self):
         """Тест корректных типов отчета"""
-        assert Validator.validate_report_type('performance') == "performance"
-        assert Validator.validate_report_type('table') == "table"
-        assert Validator.validate_report_type('csv') == "csv"
+        assert Validator.validate_report_type("performance") == "performance"
+        assert Validator.validate_report_type("table") == "table"
+        assert Validator.validate_report_type("csv") == "csv"
 
     def test_validate_report_type_invalid(self):
         """Тест не корректных типов отчета"""
         with pytest.raises(argparse.ArgumentTypeError):
-            Validator.validate_report_type('invalid_type')
+            Validator.validate_report_type("invalid_type")
         with pytest.raises(argparse.ArgumentTypeError):
-            Validator.validate_report_type('excel')
+            Validator.validate_report_type("excel")
 
     def test_validate_file_paths_all_valid(self):
         """Тест когда все файлы корректные"""
-        with tempfile.NamedTemporaryFile(suffix='.csv', delete=False) as f1:
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as f1:
             f1_path = f1.name
-        with tempfile.NamedTemporaryFile(suffix='.csv', delete=False) as f2:
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as f2:
             f2_path = f2.name
         try:
             files = [f1_path, f2_path]
@@ -38,10 +41,10 @@ class TestValidator:
 
     def test_validate_file_paths_mixed(self):
         """Тест когда часть файлов не корректна"""
-        with tempfile.NamedTemporaryFile(suffix='.csv', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".csv", delete=False) as f:
             valid_file = f.name
         try:
-            files = [valid_file, 'nonexistent.csv', 'file.txt']
+            files = [valid_file, "nonexistent.csv", "file.txt"]
             res = Validator.validate_file_paths(files)
             assert res == [valid_file]
             assert len(res) == 1
@@ -50,6 +53,19 @@ class TestValidator:
 
     def test_validate_file_paths_all_invalid(self):
         """Тест когда все файлы не корректные"""
-        files = ['nonexistent.csv', 'file.txt', 'img.png']
+        files = ["nonexistent.csv", "file.txt", "img.png"]
         with pytest.raises(argparse.ArgumentTypeError):
             Validator.validate_report_type(files)
+
+
+class TestValidatorErrors:
+    """Тест обработки ошибок в Validator"""
+
+    def test_validate_path_nonexistent_file(self):
+        """Тест с несуществующими файлами"""
+        files = ["nonexistent1.csv", "nonexistent2.csv"]
+
+        with pytest.raises(argparse.ArgumentTypeError) as e:
+            Validator.validate_file_paths(files)
+
+        assert "Не найдено ни одного файла" in str(e.value)
