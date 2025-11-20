@@ -42,16 +42,16 @@ pytest
 
 -- Пример запуска скрипта (performance вывод)
 
-    position               performance
---  -------------------  -------------
- 1  Backend Developer             4.83
- 2  DevOps Engineer               4.80
- 3  Data Engineer                 4.70
- 4  Fullstack Developer           4.70
- 5  Frontend Developer            4.65
- 6  Data Scientist                4.65
- 7  Mobile Developer              4.60
- 8  QA Engineer                   4.50
+|   | position              | performance |
+|--:|-----------------------|------------:|
+| 1 | Backend Developer     |        4.83 |
+| 2 | DevOps Engineer       |        4.80 |
+| 3 | Data Engineer         |        4.70 |
+| 4 | Fullstack Developer   |        4.70 |
+| 5 | Frontend Developer    |        4.65 |
+| 6 | Data Scientist        |        4.65 |
+| 7 | Mobile Developer      |        4.60 |
+| 8 | QA Engineer           |        4.50 |
 
 
 
